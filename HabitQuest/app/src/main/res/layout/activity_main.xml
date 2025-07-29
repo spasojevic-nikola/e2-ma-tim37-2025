@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="24dp">
+
+        <ImageView
+            android:id="@+id/avatar1"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/avatar1"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/avatar2"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/avatar2"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/avatar3"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/avatar2"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/avatar4"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/avatar2"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/avatar5"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/avatar2"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="Korisničko ime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:hint="Email"
+        app:layout_constraintTop_toBottomOf="@id/etUsername"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="Lozinka"
+        app:layout_constraintTop_toBottomOf="@id/etEmail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
+
+    <EditText
+        android:id="@+id/etConfirmPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="Potvrdi lozinku"
+        app:layout_constraintTop_toBottomOf="@id/etPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Registruj se"
+        app:layout_constraintTop_toBottomOf="@id/etConfirmPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
