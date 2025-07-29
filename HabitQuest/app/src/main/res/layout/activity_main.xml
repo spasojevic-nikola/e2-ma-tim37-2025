@@ -20,7 +20,8 @@
             android:layout_height="64dp"
             android:src="@drawable/avatar1"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:layout_marginEnd="8dp" />
 
         <ImageView
             android:id="@+id/avatar2"
@@ -28,7 +29,8 @@
             android:layout_height="64dp"
             android:src="@drawable/avatar2"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:layout_marginEnd="8dp" />
 
         <ImageView
             android:id="@+id/avatar3"
@@ -36,7 +38,8 @@
             android:layout_height="64dp"
             android:src="@drawable/avatar2"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:layout_marginEnd="8dp" />
 
         <ImageView
             android:id="@+id/avatar4"
@@ -44,7 +47,8 @@
             android:layout_height="64dp"
             android:src="@drawable/avatar2"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:layout_marginEnd="8dp" />
 
         <ImageView
             android:id="@+id/avatar5"
@@ -54,6 +58,7 @@
             android:clickable="true"
             android:focusable="true" />
     </LinearLayout>
+
 
     <EditText
         android:id="@+id/etUsername"
