@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             new Thread(() -> {
                 HttpURLConnection conn = null;
                 try {
-                    URL url = new URL("http://13.13.13.71:3000/register");
+                    URL url = new URL(Constants.BASE_URL + "/register");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json");
