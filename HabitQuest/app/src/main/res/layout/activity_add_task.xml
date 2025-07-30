@@ -1,10 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".AddTaskActivity">
+    android:layout_height="match_parent">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Naziv zadatka (obavezno) -->
+        <EditText
+            android:id="@+id/etTaskName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Naziv zadatka"
+            android:inputType="text"/>
+
+        <!-- Opis zadatka (opciono) -->
+        <EditText
+            android:id="@+id/etTaskDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Opis zadatka (opciono)"
+            android:inputType="text"/>
+
+        <!-- Kategorija zadatka (iz baze; za sada hardkodirano) -->
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
+
+        <!-- Težina (XP) -->
+        <Spinner
+            android:id="@+id/spinnerDifficulty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
+
+        <!-- Bitnost (XP) -->
+        <Spinner
+            android:id="@+id/spinnerImportance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
+
+        <!-- Učestalost: jednokratni ili ponavljajući -->
+        <RadioGroup
+            android:id="@+id/radioGroupFrequency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/rbOnetime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jednokratni"
+                android:checked="true"/>
+
+            <RadioButton
+                android:id="@+id/rbRepeating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ponavljajući"
+                android:layout_marginStart="30dp"/>
+        </RadioGroup>
+
+        <!-- Samo za ponavljajući zadatak: interval/jedinica i datumi -->
+        <LinearLayout
+            android:id="@+id/layoutRepeatDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/etRepeatInterval"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:hint="Interval"
+                android:inputType="number"/>
+
+            <Spinner
+                android:id="@+id/spinnerRepeatUnit"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+        <!-- Datumi ponavljanja (vidljivo samo za ponavljajuće) -->
+        <LinearLayout
+            android:id="@+id/layoutRepeatDates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:id="@+id/btnStartDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Datum početka"/>
+
+            <Button
+                android:id="@+id/btnEndDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Datum kraja"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+        <!-- Vreme izvršenja (obavezno) -->
+        <Button
+            android:id="@+id/btnExecutionTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Izaberi vreme" />
+
+        <!-- Dugme za čuvanje -->
+        <Button
+            android:id="@+id/btnCreateTask"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sačuvaj"
+            android:layout_marginTop="22dp"/>
+    </LinearLayout>
+</ScrollView>
