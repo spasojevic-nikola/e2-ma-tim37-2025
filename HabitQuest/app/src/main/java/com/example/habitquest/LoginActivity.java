@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Ako je već ulogovan, idi na MainActivity
         if (sessionManager.isLoggedIn()) {
-            startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
             finish();
         }
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
         tvRegisterLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
                 startActivity(intent);
             }
         });
@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     if (finalCode == 200) {
                         sessionManager.setLogin(true);
-                        startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     } else {
                         Toast.makeText(LoginActivity.this, "Greška pri loginu: " + response, Toast.LENGTH_LONG).show();
