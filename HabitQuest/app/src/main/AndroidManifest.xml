@@ -17,6 +17,9 @@
 
         <!-- Aktivacioni ekran -->
         <activity
+            android:name=".AddTaskActivity"
+            android:exported="true" />
+        <activity
             android:name=".ActivationActivity"
             android:exported="false" />
 
