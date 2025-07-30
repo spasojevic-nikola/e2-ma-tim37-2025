@@ -15,19 +15,29 @@
         android:theme="@style/Theme.HabitQuest"
         android:networkSecurityConfig="@xml/network_security_config">
 
-
+        <!-- Aktivacioni ekran -->
         <activity
             android:name=".ActivationActivity"
             android:exported="false" />
+
+        <!-- Login ekran -->
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
+            <!-- Postavi kao početni ekran -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <!-- Glavna aktivnost nakon prijave -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
+
+        <activity android:name=".ProfileActivity" />
+
+    </application>
 
 </manifest>
