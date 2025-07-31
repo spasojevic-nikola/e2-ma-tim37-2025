@@ -18,8 +18,31 @@ public class AddTaskActivity extends AppCompatActivity {
     private LinearLayout layoutRepeatDetails, layoutRepeatDates;
     private Button btnStartDate, btnEndDate, btnExecutionTime, btnCreateTask;
 
+    private View viewCategoryColor;
+    private List<TaskCategory> categoryList;
+
     private String startDate = "", endDate = "", executionTime = "";
     private DatabaseHelper dbHelper;
+
+    private void loadCategoriesToSpinner() {
+        categoryList = dbHelper.getAllCategoriesFromDb(); // ažuriraš polje klase!
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_dropdown_item,
+                getCategoryNames(categoryList));
+        spinnerCategory.setAdapter(categoryAdapter);
+
+        // Listener za prikaz boje kategorije
+        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String color = categoryList.get(position).getColor();
+                viewCategoryColor.setBackgroundColor(android.graphics.Color.parseColor(color));
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +64,20 @@ public class AddTaskActivity extends AppCompatActivity {
         btnEndDate = findViewById(R.id.btnEndDate);
         btnExecutionTime = findViewById(R.id.btnExecutionTime);
         btnCreateTask = findViewById(R.id.btnCreateTask);
+        viewCategoryColor = findViewById(R.id.viewCategoryColor);
+        spinnerCategory = findViewById(R.id.spinnerCategory);
 
         dbHelper = new DatabaseHelper(this);
 
         // 1. Popuni kategorije iz baze
-        List<TaskCategory> categoryList = dbHelper.getAllCategories();
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_dropdown_item,
-                getCategoryNames(categoryList));
-        spinnerCategory.setAdapter(categoryAdapter);
+//        List<TaskCategory> categoryList = dbHelper.getAllCategoriesFromDb();
+//        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+//                this, android.R.layout.simple_spinner_dropdown_item,
+//                getCategoryNames(categoryList));
+//        spinnerCategory.setAdapter(categoryAdapter);
+
+        loadCategoriesToSpinner();
+
 
         // 2. Popuni težinu i bitnost iz predefinisanih listi
         spinnerDifficulty.setAdapter(new ArrayAdapter<>(this,
@@ -104,6 +132,9 @@ public class AddTaskActivity extends AppCompatActivity {
 
             int xpValue = getXPForDifficulty(difficulty) + getXPForImportance(importance);
 
+            int pos = spinnerCategory.getSelectedItemPosition();
+            String categoryColor = categoryList.get(pos).getColor();
+
             Task task = new Task();
             task.setName(name);
             task.setDescription(description);
@@ -118,6 +149,8 @@ public class AddTaskActivity extends AppCompatActivity {
             task.setExecutionTime(executionTime);
             task.setXpValue(xpValue);
             task.setStatus("aktivan");
+            task.setCategoryColor(categoryColor);
+
 
             boolean success = dbHelper.insertTask(task);
 
@@ -180,4 +213,13 @@ public class AddTaskActivity extends AppCompatActivity {
             default: return 0;
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadCategoriesToSpinner();
+    }
+
+
+
 }

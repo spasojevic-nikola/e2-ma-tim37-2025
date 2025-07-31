@@ -25,12 +25,38 @@
             android:hint="Opis zadatka (opciono)"
             android:inputType="text"/>
 
-        <!-- Kategorija zadatka (iz baze; za sada hardkodirano) -->
+        <!-- Kategorija zadatka  -->
         <Spinner
             android:id="@+id/spinnerCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Boja kategorije: "
+                    android:textSize="16sp"/>
+
+                <View
+                    android:id="@+id/viewCategoryColor"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="10dp"
+                    android:background="#43A047"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+
+
+
 
         <!-- Težina (XP) -->
         <Spinner

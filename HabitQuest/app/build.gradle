@@ -43,4 +43,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:20.3.0'
     implementation 'com.google.android.material:material:1.11.0'
 
+    //color picker
+    implementation 'com.github.yukuku:ambilwarna:2.0.1'
+
+
 }

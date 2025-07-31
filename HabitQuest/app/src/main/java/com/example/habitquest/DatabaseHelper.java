@@ -43,6 +43,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TASK_XP = "xp_value";
     public static final String COLUMN_TASK_STATUS = "status";
 
+    // --- TABELA KATEGORIJA ---
+    public static final String TABLE_CATEGORIES = "categories";
+    public static final String COLUMN_CATEGORY_ID = "id";
+    public static final String COLUMN_CATEGORY_NAME = "name";
+    public static final String COLUMN_CATEGORY_COLOR = "color";
+    public static final String COLUMN_TASK_CATEGORY_COLOR = "category_color";
+
+
 
     // SQL za kreiranje tabele users
     private static final String TABLE_CREATE =
@@ -74,10 +82,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_TASK_IMPORTANCE + " TEXT, " +
                     COLUMN_TASK_DIFFICULTY + " TEXT, " +
                     COLUMN_TASK_XP + " INTEGER, " +
-                    COLUMN_TASK_STATUS + " TEXT" +
+                    COLUMN_TASK_STATUS + " TEXT, " +
+                    COLUMN_TASK_CATEGORY_COLOR + " TEXT " +
                     ");";
 
 
+    // SQL za kreiranje tabele kategorija
+    private static final String TABLE_CREATE_CATEGORIES =
+            "CREATE TABLE " + TABLE_CATEGORIES + " (" +
+                    COLUMN_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_CATEGORY_NAME + " TEXT UNIQUE, " +
+                    COLUMN_CATEGORY_COLOR + " TEXT" +
+                    ");";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -88,6 +104,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(TABLE_CREATE);        // za users tabelu
         db.execSQL(TABLE_CREATE_TASKS);  // za tasks tabelu
+        db.execSQL(TABLE_CREATE_CATEGORIES);    //za categories tabelu
+
 
     }
 
@@ -95,6 +113,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);
+
         onCreate(db);
 
         onCreate(db);
@@ -198,22 +218,107 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_TASK_DIFFICULTY, task.getDifficulty());
         values.put(COLUMN_TASK_XP, task.getXpValue());
         values.put(COLUMN_TASK_STATUS, task.getStatus());
+        values.put(COLUMN_TASK_CATEGORY_COLOR, task.getCategoryColor());
+
 
         long result = db.insert(TABLE_TASKS, null, values);
         return result != -1;
     }
 
 
-    // Za demo, vraća hardkodirane kategorije
-    //treba uraditi select iz baze za kategorije
-    public List<TaskCategory> getAllCategories() {
+//    // Za demo, vraća hardkodirane kategorije
+//    //treba uraditi select iz baze za kategorije
+//    public List<TaskCategory> getAllCategories() {
+//        List<TaskCategory> list = new ArrayList<>();
+//        list.add(new TaskCategory(1, "Zdravlje", "#43A047"));
+//        list.add(new TaskCategory(2, "Učenje", "#1E88E5"));
+//        list.add(new TaskCategory(3, "Zabava", "#F4511E"));
+//        list.add(new TaskCategory(4, "Sređivanje", "#FDD835"));
+//        return list;
+//    }
+
+    // Dodavanje nove kategorije
+    public boolean insertCategory(String name, String color) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Provera da li boja već postoji
+        Cursor c = db.query(TABLE_CATEGORIES, null, COLUMN_CATEGORY_COLOR + "=?", new String[]{color}, null, null, null);
+        if (c.moveToFirst()) {
+            c.close();
+            return false; // već postoji ta boja
+        }
+        c.close();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CATEGORY_NAME, name);
+        values.put(COLUMN_CATEGORY_COLOR, color);
+        long result = db.insert(TABLE_CATEGORIES, null, values);
+        return result != -1;
+    }
+
+    // Lista svih kategorija
+    public List<TaskCategory> getAllCategoriesFromDb() {
         List<TaskCategory> list = new ArrayList<>();
-        list.add(new TaskCategory(1, "Zdravlje", "#43A047"));
-        list.add(new TaskCategory(2, "Učenje", "#1E88E5"));
-        list.add(new TaskCategory(3, "Zabava", "#F4511E"));
-        list.add(new TaskCategory(4, "Sređivanje", "#FDD835"));
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_CATEGORIES, null);
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY_ID));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY_NAME));
+            String color = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY_COLOR));
+            list.add(new TaskCategory(id, name, color));
+        }
+        cursor.close();
         return list;
     }
+
+    // Menjanje boje kategorije (i boje svih zadataka te kategorije)
+    public boolean updateCategoryColor(int id, String newColor) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Provera da li boja već postoji
+        Cursor c = db.query(TABLE_CATEGORIES, null, COLUMN_CATEGORY_COLOR + "=?", new String[]{newColor}, null, null, null);
+        if (c.moveToFirst()) {
+            c.close();
+            return false; // već postoji ta boja
+        }
+        c.close();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CATEGORY_COLOR, newColor);
+        int rows = db.update(TABLE_CATEGORIES, values, COLUMN_CATEGORY_ID + "=?", new String[]{String.valueOf(id)});
+
+        // 1. Pronađi ime kategorije kojoj menjaš boju
+        Cursor catCursor = db.query(TABLE_CATEGORIES, new String[]{COLUMN_CATEGORY_NAME}, COLUMN_CATEGORY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
+        String categoryName = null;
+        if (catCursor.moveToFirst()) {
+            categoryName = catCursor.getString(catCursor.getColumnIndexOrThrow(COLUMN_CATEGORY_NAME));
+        }
+        catCursor.close();
+        if (categoryName != null) {
+            ContentValues taskUpdate = new ContentValues();
+            taskUpdate.put(COLUMN_TASK_CATEGORY_COLOR, newColor);
+            db.update(TABLE_TASKS, taskUpdate, COLUMN_TASK_CATEGORY + "=?", new String[]{categoryName});
+        }
+
+        return rows > 0;
+    }
+
+
+    // Provera da li postoji kategorija sa tom bojom
+    public boolean categoryColorExists(String color) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT 1 FROM " + TABLE_CATEGORIES + " WHERE " + COLUMN_CATEGORY_COLOR + " = ? LIMIT 1",
+                new String[]{color}
+        );
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+        return exists;
+    }
+
+
+
+
 
 
 
