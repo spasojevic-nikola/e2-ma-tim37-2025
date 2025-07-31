@@ -18,7 +18,7 @@ public class ManageCategoriesActivity extends AppCompatActivity {
     private String pickedColor = "#43A047"; // podrazumevana boja
     private DatabaseHelper dbHelper;
     private List<TaskCategory> categoryList;
-    private ArrayAdapter<String> adapter;
+    private CategoryAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,6 @@ public class ManageCategoriesActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onCancel(AmbilWarnaDialog dialog) {
-                    // ništa, možeš dodati toast
                 }
             });
             colorPicker.show();
@@ -95,14 +94,12 @@ public class ManageCategoriesActivity extends AppCompatActivity {
 
 
     }
-
     private void refreshList() {
         categoryList = dbHelper.getAllCategoriesFromDb();
-        adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                getNamesWithColor(categoryList));
+        adapter = new CategoryAdapter(this, categoryList);
         listViewCategories.setAdapter(adapter);
     }
+
 
     private String[] getNamesWithColor(List<TaskCategory> cats) {
         String[] arr = new String[cats.size()];
