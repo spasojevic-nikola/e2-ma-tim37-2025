@@ -15,6 +15,7 @@ public class Task {
     private String difficulty; // "Veoma lak", "Lak", "Tezak", "Ekstremno tezak"
     private int xpValue;
     private String status; // "aktivan", "uradjen", "neuredjen", "pauziran", "otkazan"
+    private String categoryColor;
 
 
 
@@ -128,5 +129,13 @@ public class Task {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getCategoryColor() {
+        return categoryColor;
+    }
+
+    public void setCategoryColor(String categoryColor) {
+        this.categoryColor = categoryColor;
     }
 }

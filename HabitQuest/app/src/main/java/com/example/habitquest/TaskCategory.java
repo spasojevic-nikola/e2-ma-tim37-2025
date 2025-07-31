@@ -14,4 +14,8 @@ public class TaskCategory {
     public String getName() { return name; }
     public String getColor() { return color; }
     public int getId() { return id; }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }
