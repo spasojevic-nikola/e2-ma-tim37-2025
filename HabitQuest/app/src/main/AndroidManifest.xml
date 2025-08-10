@@ -36,7 +36,6 @@
             android:name=".RegistrationActivity"
             android:exported="true" />
 
-        <activity android:name=".ProfileActivity" />
         <activity android:name=".MainActivity" />
 
     </application>

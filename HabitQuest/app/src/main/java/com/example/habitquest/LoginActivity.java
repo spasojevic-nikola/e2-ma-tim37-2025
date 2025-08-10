@@ -2,6 +2,7 @@ package com.example.habitquest;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -101,13 +102,26 @@ public class LoginActivity extends AppCompatActivity {
                 int finalCode = code;
                 runOnUiThread(() -> {
                     if (finalCode == 200) {
-                        sessionManager.setLogin(true);
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            JSONObject userObject = jsonResponse.getJSONObject("user");
+                            int userId = userObject.getInt("id");
+
+                            sessionManager.setLogin(true);
+                            sessionManager.saveUserId(userId);
+
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(LoginActivity.this, "Greška pri parsiranju podataka", Toast.LENGTH_LONG).show();
+                        }
                     } else {
                         Toast.makeText(LoginActivity.this, "Greška pri loginu: " + response, Toast.LENGTH_LONG).show();
                     }
                 });
+
 
             } catch (Exception e) {
                 e.printStackTrace();

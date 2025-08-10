@@ -45,4 +45,13 @@ public class SessionManager {
         return pref.getString("username", null);
     }
 
+    public void saveUserId(int userId) {
+        editor.putInt("user_id", userId);
+        editor.apply();
+    }
+
+    public int getUserId() {
+        return pref.getInt("user_id", -1);
+    }
+
 }
