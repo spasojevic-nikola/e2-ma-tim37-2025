@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SessionManager {
-
+//dodajem koemntar
     private static final String PREF_NAME = "HabitQuestSession";
     private static final String IS_LOGGED_IN = "isLoggedIn";
 
@@ -43,6 +43,15 @@ public class SessionManager {
 
     public String getUsername() {
         return pref.getString("username", null);
+    }
+
+    public void saveUserId(int userId) {
+        editor.putInt("user_id", userId);
+        editor.apply();
+    }
+
+    public int getUserId() {
+        return pref.getInt("user_id", -1);
     }
 
 }
