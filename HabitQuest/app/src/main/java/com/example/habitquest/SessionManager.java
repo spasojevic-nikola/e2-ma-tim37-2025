@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SessionManager {
-
+//dodajem koemntar
     private static final String PREF_NAME = "HabitQuestSession";
     private static final String IS_LOGGED_IN = "isLoggedIn";
 
