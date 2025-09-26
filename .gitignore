@@ -1,15 +1,28 @@
-*.iml
-.gradle
+# Node.js backend
+/backend/node_modules/
+/backend/*.db
+/backend/*.sqlite
+/backend/*.sqlite3
+/backend/*.log
+/backend/.env
+
+# Android Studio i Java/Gradle
+/.idea/
+/.gradle/
+/build/
+/app/build/
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
+
+# Android specifični fajlovi
+*.iml
+*.apk
+*.ap_
+*.keystore
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+**/google-services.json
+
+# OS fajlovi
+.DS_Store
+Thumbs.db
