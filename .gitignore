@@ -21,6 +21,7 @@
 /captures
 .externalNativeBuild
 .cxx
+**/google-services.json
 
 # OS fajlovi
 .DS_Store
