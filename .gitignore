@@ -18,6 +18,9 @@
 *.apk
 *.ap_
 *.keystore
+/captures
+.externalNativeBuild
+.cxx
 
 # OS fajlovi
 .DS_Store
