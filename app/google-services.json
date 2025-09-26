@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1014588129855",
+    "project_id": "newhabitquest",
+    "storage_bucket": "newhabitquest.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014588129855:android:0aabd1c3c24c2b3cf36e8a",
+        "android_client_info": {
+          "package_name": "com.example.newhabitquest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbfsn_RwUiaiYf62rz9kGQT0Y2xbHPaUU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
