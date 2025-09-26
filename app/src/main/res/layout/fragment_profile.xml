@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <ImageView
+        android:id="@+id/profileAvatar"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="24dp"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/profileUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:layout_marginBottom="16dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="8dp">
+        <TextView
+            android:id="@+id/profileLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Level: 1"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:layout_marginEnd="16dp"/>
+        <TextView
+            android:id="@+id/profileTitula"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Titula: Početnik"
+            android:textSize="16sp"
+            android:textStyle="normal"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="8dp">
+        <TextView
+            android:id="@+id/profilePP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PP: 0"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:layout_marginEnd="16dp"/>
+        <TextView
+            android:id="@+id/profileXP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="XP: 0"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:layout_marginEnd="16dp"/>
+        <TextView
+            android:id="@+id/profileCoins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Coins: 0"
+            android:textSize="16sp"
+            android:textStyle="normal"/>
+    </LinearLayout>
+
+    <!--<TextView
+        android:id="@+id/profileEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email: "
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:layout_marginBottom="8dp"/>
+    -->
+
+    <TextView
+        android:id="@+id/profileBadgesCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Broj bedževa: 0"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:layout_marginBottom="8dp"/>
+    <TextView
+        android:id="@+id/profileBadges"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bedževi: -"
+        android:textSize="15sp"
+        android:textStyle="normal"
+        android:layout_marginBottom="8dp"/>
+    <TextView
+        android:id="@+id/profileEquipment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Oprema: -"
+        android:textSize="15sp"
+        android:textStyle="normal"
+        android:layout_marginBottom="8dp"/>
+
+</LinearLayout>
