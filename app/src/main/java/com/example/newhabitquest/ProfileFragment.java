@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -39,6 +40,13 @@ public class ProfileFragment extends Fragment {
         TextView badgesCountView = view.findViewById(R.id.profileBadgesCount);
         TextView badgesView = view.findViewById(R.id.profileBadges);
         TextView equipmentView = view.findViewById(R.id.profileEquipment);
+        Button socialButton = view.findViewById(R.id.social_button);
+
+        // Setup social button click listener
+        socialButton.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(getContext(), SocialActivity.class);
+            startActivity(intent);
+        });
 
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();

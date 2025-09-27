@@ -37,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
         // Initialize equipment data for logged in user
         initializeUserEquipment();
 
+        // Start notification listener service for real-time notifications
+        Intent notificationServiceIntent = new Intent(this, NotificationListenerService.class);
+        startService(notificationServiceIntent);
+        android.util.Log.d("MainActivity", "Starting notification listener service for user: " +
+            (FirebaseAuth.getInstance().getCurrentUser() != null ? FirebaseAuth.getInstance().getCurrentUser().getUid() : "null"));
+
         Button logoutBtn = findViewById(R.id.logoutBtn);
         logoutBtn.setOnClickListener(v -> {
             try {
