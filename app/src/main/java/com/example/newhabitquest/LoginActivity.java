@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -72,8 +73,30 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Logged in Successfully!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            if(fAuth.getCurrentUser() != null && fAuth.getCurrentUser().isEmailVerified()) {
+                                Toast.makeText(LoginActivity.this, "Logged in Successfully!", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finish();
+                            } else {
+                                String userId = fAuth.getCurrentUser().getUid();
+                                FirebaseFirestore.getInstance().collection("users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
+                                    if(documentSnapshot.exists()) {
+                                        Long registrationTime = documentSnapshot.getLong("registrationTime");
+                                        long currentTime = System.currentTimeMillis();
+                                        if(registrationTime != null && currentTime - registrationTime > 24 * 60 * 60 * 1000) {
+                                            // Brisanje korisnika iz Auth i Firestore
+                                            fAuth.getCurrentUser().delete();
+                                            FirebaseFirestore.getInstance().collection("users").document(userId).delete();
+                                            Toast.makeText(LoginActivity.this, "Link za verifikaciju je istekao. Registrujte se ponovo.", Toast.LENGTH_LONG).show();
+                                            startActivity(new Intent(getApplicationContext(), RegistrationActivity.class));
+                                            finish();
+                                        } else {
+                                            fAuth.signOut();
+                                            Toast.makeText(LoginActivity.this, "Verifikujte email pre prijave!", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                            }
                         }
                         else {
                             Toast.makeText(LoginActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
