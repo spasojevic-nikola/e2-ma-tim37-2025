@@ -16,4 +16,8 @@
         android:id="@+id/nav_boss"
         android:icon="@drawable/boss"
         android:title="Boss" />
+    <item
+        android:id="@+id/nav_equipment"
+        android:icon="@drawable/equipment"
+        android:title="Equipment" />
 </menu>
