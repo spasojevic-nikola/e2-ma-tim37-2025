@@ -1,0 +1,27 @@
+# Node.js backend
+/backend/node_modules/
+/backend/*.db
+/backend/*.sqlite
+/backend/*.sqlite3
+/backend/*.log
+/backend/.env
+
+# Android Studio i Java/Gradle
+/.idea/
+/.gradle/
+/build/
+/app/build/
+/local.properties
+
+# Android specifični fajlovi
+*.iml
+*.apk
+*.ap_
+*.keystore
+/captures
+.externalNativeBuild
+.cxx
+
+# OS fajlovi
+.DS_Store
+Thumbs.db
