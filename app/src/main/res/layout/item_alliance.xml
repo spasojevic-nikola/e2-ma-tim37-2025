@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/alliance_name_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Naziv saveza"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/holo_blue_dark" />
+
+                <TextView
+                    android:id="@+id/alliance_description_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Opis saveza"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/alliance_action_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pridruži se"
+                android:textSize="12sp"
+                style="@style/Widget.MaterialComponents.Button" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/members_count_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="👥 0/5 članova"
+                android:textSize="12sp"
+                android:textColor="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/total_points_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="⭐ Ukupno poena: 0"
+                android:textSize="12sp"
+                android:textColor="@android:color/darker_gray" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/created_date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kreiran: 27.09.2025"
+            android:textSize="11sp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/current_task_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Trenutni zadatak: Završiti 5 navika"
+            android:textSize="12sp"
+            android:textColor="@android:color/holo_orange_dark"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:background="@android:color/holo_blue_light"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
