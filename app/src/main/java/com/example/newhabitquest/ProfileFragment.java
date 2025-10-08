@@ -41,10 +41,19 @@ public class ProfileFragment extends Fragment {
         TextView badgesView = view.findViewById(R.id.profileBadges);
         TextView equipmentView = view.findViewById(R.id.profileEquipment);
         Button socialButton = view.findViewById(R.id.social_button);
+        Button changePasswordButton = new Button(getContext());
+        changePasswordButton.setText("Promeni lozinku");
+        ((ViewGroup) view).addView(changePasswordButton);
 
         // Setup social button click listener
         socialButton.setOnClickListener(v -> {
             android.content.Intent intent = new android.content.Intent(getContext(), SocialActivity.class);
+            startActivity(intent);
+        });
+
+        // Setup change password button click listener
+        changePasswordButton.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(getContext(), ChangePasswordActivity.class);
             startActivity(intent);
         });
 

@@ -38,6 +38,11 @@
             android:exported="false"
             android:parentActivityName=".SocialActivity" />
 
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
         <!-- Broadcast receiver for handling alliance invitation responses -->
         <receiver android:name=".AllianceInvitationReceiver"
             android:exported="false">
