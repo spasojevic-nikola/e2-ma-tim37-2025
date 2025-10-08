@@ -412,8 +412,9 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.OnFriend
 
     @Override
     public void onViewProfileClick(Friend friend) {
-        // TODO: Open friend's profile in new fragment/activity
-        Toast.makeText(getContext(), "Viewing profile of " + friend.getUsername(), Toast.LENGTH_SHORT).show();
+        android.content.Intent intent = new android.content.Intent(getContext(), FriendProfileActivity.class);
+        intent.putExtra("friendId", friend.getUserId());
+        startActivity(intent);
     }
 
     private void sendFriendRequest(Friend friend) {

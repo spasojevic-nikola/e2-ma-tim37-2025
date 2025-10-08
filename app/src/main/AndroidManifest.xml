@@ -43,6 +43,11 @@
             android:exported="false"
             android:parentActivityName=".MainActivity" />
 
+        <activity
+            android:name=".FriendProfileActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
         <!-- Broadcast receiver for handling alliance invitation responses -->
         <receiver android:name=".AllianceInvitationReceiver"
             android:exported="false">
