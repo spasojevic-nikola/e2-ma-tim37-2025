@@ -48,7 +48,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
 
     static class EquipmentViewHolder extends RecyclerView.ViewHolder {
         private TextView nameText, descriptionText, priceText, quantityText, statusText;
-        private Button actionButton;
+        private Button actionButton, activateButton;
 
         public EquipmentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -58,6 +58,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
             quantityText = itemView.findViewById(R.id.equipment_quantity);
             statusText = itemView.findViewById(R.id.equipment_status);
             actionButton = itemView.findViewById(R.id.equipment_action_btn);
+            activateButton = itemView.findViewById(R.id.equipment_activate_btn);
         }
 
         public void bind(Equipment equipment, OnEquipmentClickListener listener) {
@@ -79,40 +80,33 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Equi
                 quantityText.setVisibility(View.GONE);
             }
 
-            // Status text
-            if (equipment.isActive()) {
-                if (equipment.getType().equals("odeca") && equipment.getRemainingDuration() > 0) {
-                    statusText.setText("Aktivno (još " + equipment.getRemainingDuration() + " borbi)");
-                } else if (equipment.isPermanent()) {
-                    statusText.setText("Permanentno aktivno");
-                } else {
-                    statusText.setText("Aktivno");
-                }
-                statusText.setVisibility(View.VISIBLE);
-            } else {
-                statusText.setVisibility(View.GONE);
-            }
+            // Status text - removed all "Aktivno" labels
+            // Simply hide the status text completely to remove green "AKTIVNO" labels
+            statusText.setVisibility(View.GONE);
 
             // Button logic
+            actionButton.setVisibility(View.GONE);
+            activateButton.setVisibility(View.GONE);
             if (!equipment.isOwned() && equipment.getPrice() > 0) {
                 actionButton.setText("Kupi");
                 actionButton.setVisibility(View.VISIBLE);
+                actionButton.setEnabled(true);
                 actionButton.setOnClickListener(v -> listener.onBuyClick(equipment));
             } else if (equipment.isOwned() && equipment.getType().equals("napici") && equipment.getQuantity() > 0 && !equipment.isActive()) {
-                actionButton.setText("Aktiviraj");
-                actionButton.setVisibility(View.VISIBLE);
-                actionButton.setOnClickListener(v -> listener.onActivateClick(equipment));
+                activateButton.setText("Aktiviraj");
+                activateButton.setVisibility(View.VISIBLE);
+                activateButton.setEnabled(true);
+                activateButton.setOnClickListener(v -> listener.onActivateClick(equipment));
             } else if (equipment.isOwned() && equipment.getType().equals("odeca") && !equipment.isActive()) {
-                actionButton.setText("Aktiviraj");
-                actionButton.setVisibility(View.VISIBLE);
-                actionButton.setOnClickListener(v -> listener.onActivateClick(equipment));
+                activateButton.setText("Aktiviraj");
+                activateButton.setVisibility(View.VISIBLE);
+                activateButton.setEnabled(true);
+                activateButton.setOnClickListener(v -> listener.onActivateClick(equipment));
             } else if (equipment.getType().equals("oruzje") && !equipment.isOwned()) {
                 actionButton.setText("Nedostupno");
                 actionButton.setVisibility(View.VISIBLE);
                 actionButton.setEnabled(false);
                 actionButton.setOnClickListener(null);
-            } else {
-                actionButton.setVisibility(View.GONE);
             }
         }
     }
