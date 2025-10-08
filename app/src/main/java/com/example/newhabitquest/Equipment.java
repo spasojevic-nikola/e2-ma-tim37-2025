@@ -20,6 +20,8 @@ public class Equipment {
     private int quantity; // for potions
     private int remainingDuration; // for active clothing
 
+    private boolean singleUse; // Dodato za napitke
+
     public Equipment() {
         // Default constructor for Firebase
     }
@@ -39,6 +41,14 @@ public class Equipment {
         this.isActive = false;
         this.quantity = 0;
         this.remainingDuration = 0;
+
+        // Postavi singleUse na osnovu tipa napitka
+        if (type.equals("napici")) {
+            // Napitci koji nisu trajni su jednokratni
+            this.singleUse = !isPermanent;
+        } else {
+            this.singleUse = false;
+        }
     }
 
     // Getters and setters with Firestore annotations
@@ -92,4 +102,7 @@ public class Equipment {
 
     public int getRemainingDuration() { return remainingDuration; }
     public void setRemainingDuration(int remainingDuration) { this.remainingDuration = remainingDuration; }
+
+    public boolean getSingleUse() { return singleUse; }
+    public void setSingleUse(boolean singleUse) { this.singleUse = singleUse; }
 }

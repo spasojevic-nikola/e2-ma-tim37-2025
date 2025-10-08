@@ -149,9 +149,9 @@ public class MainActivity extends AppCompatActivity {
             // Oružje
             createEquipmentMap("sword", "Mač osvajača", "oruzje",
                 "Trajno povećanje snage za 5%", 0, "permanent_power", 5, true, 0, false, false, 0, 0, userId),
-            createEquipmentMap("bow", "Luk zlatnog strjelca", "oruzje",
+            createEquipmentMap("bow", "Luk zlatnog strelca", "oruzje",
                 "Trajno povećanje novca za 5%", 0, "coin_boost", 5, true, 0, false, false, 0, 0, userId),
-            createEquipmentMap("axe", "Sekira berserka", "oruzje",
+            createEquipmentMap("axe", "Zlatna sekira", "oruzje",
                 "Trajno povećanje kritičnog napada za 8%", 0, "critical_chance", 8, true, 0, false, false, 0, 0, userId),
             createEquipmentMap("staff", "Štap mudrosti", "oruzje",
                 "Trajno povećanje XP za 10%", 0, "xp_boost", 10, true, 0, false, false, 0, 0, userId)

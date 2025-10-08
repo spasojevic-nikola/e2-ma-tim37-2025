@@ -526,13 +526,16 @@ public class AlliancesFragment extends Fragment implements AlliancesAdapter.OnAl
             .setTitle("Ukinuti savez")
             .setMessage("Da li ste sigurni da želite da ukinete savez \"" + alliance.getName() + "\"?")
             .setPositiveButton("Da", (dialog, which) -> {
+                // Completely delete the alliance document instead of just setting isActive to false
                 db.collection("alliances").document(alliance.getAllianceId())
-                    .update("isActive", false)
+                    .delete()
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(getContext(), "Savez je ukinut", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Savez je uspešno obrisan", Toast.LENGTH_SHORT).show();
+                        // Refresh the alliances list to reflect the deletion
+                        loadAlliances();
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Greška pri ukidanju saveza", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Greška pri brisanju saveza", Toast.LENGTH_SHORT).show();
                     });
             })
             .setNegativeButton("Ne", null)

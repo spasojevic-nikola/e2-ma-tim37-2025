@@ -1,5 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent" >
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!--
+            <TextView
+                android:id="@+id/tv_current_pp_boss"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PP: 0"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:layout_marginTop="32dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="24dp">
+
+                <EditText
+                    android:id="@+id/input_pp_boss"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Unesi broj PP za boss borbu"
+                    android:inputType="number"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btn_add_pp_boss"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dodaj PP"
+                    android:contentDescription="Dodaj PP za boss borbu"/>
+            </LinearLayout>
+            -->
+
+            <!-- Prikaz napitaka -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Napitci"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp"/>
+            <LinearLayout
+                android:id="@+id/layout_potions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+            <!-- Prikaz odeće -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Odeća"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp"/>
+            <LinearLayout
+                android:id="@+id/layout_clothes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+            <!-- Prikaz oružja -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Oružje"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp"/>
+            <LinearLayout
+                android:id="@+id/layout_weapons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+            <!-- Prikaz aktivirane opreme -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Aktivirana oprema"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="24dp"/>
+            <LinearLayout
+                android:id="@+id/layout_active_equipment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+            <Button
+                android:id="@+id/btn_start_fight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start Fight"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"/>
+
+            <TextView
+                android:id="@+id/label_boss_student2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Borbu sa bossom funkcionalnost radi student2"
+                android:textColor="#888888"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

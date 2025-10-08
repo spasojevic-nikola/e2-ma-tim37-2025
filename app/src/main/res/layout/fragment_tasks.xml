@@ -1,5 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent" >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <EditText
+                android:id="@+id/input_xp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Unesi broj XP-a"
+                android:inputType="number"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btn_add_xp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dodaj XP"
+                android:textSize="24sp"
+                android:contentDescription="Dodaj XP"/>
+        </LinearLayout>
+
+         <TextView
+            android:id="@+id/tv_current_xp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Trenutni XP: 0"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/tv_current_level"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nivo: 1"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_xp_to_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="XP do sledećeg nivoa: 200"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_current_pp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PP: 0"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Titula: Novajlija"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/label_student2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ovu funkcionalnost (tasks) radi student 2"
+            android:textColor="#888888"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"/>
+
+    </LinearLayout>
+
+</FrameLayout>

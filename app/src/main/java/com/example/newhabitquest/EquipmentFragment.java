@@ -58,7 +58,7 @@ public class EquipmentFragment extends Fragment implements EquipmentAdapter.OnEq
 
         try {
             db = FirebaseFirestore.getInstance();
-            equipmentRef = db.collection("equipment"); // Glavna equipment kolekcija
+            equipmentRef = db.collection("equipment");
             userRef = db.collection("users");
 
             setupRecyclerView();
@@ -333,192 +333,220 @@ public class EquipmentFragment extends Fragment implements EquipmentAdapter.OnEq
     public void onBuyClick(Equipment equipment) {
         android.util.Log.d("EquipmentFragment", "Buy button clicked for: " + equipment.getName());
 
-        // Check if fragment is still valid
-        if (getContext() == null || !isAdded()) {
+        // Add comprehensive fragment validation
+        if (getContext() == null || !isAdded() || isDetached() || getActivity() == null) {
+            android.util.Log.w("EquipmentFragment", "Fragment not available for purchase");
             return;
         }
 
-        // Check if we have enough coins
+        // Check authentication
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(getContext(), "Morate biti ulogovani!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (userCoins < equipment.getPrice()) {
             Toast.makeText(getContext(), "Nemate dovoljno novčića!", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Simplified purchase process to prevent crashes
+        performPurchase(equipment);
+    }
+
+    private void performPurchase(Equipment equipment) {
+        // Double-check fragment state before proceeding
+        if (getContext() == null || !isAdded() || userRef == null || currentUserId == null) {
+            return;
+        }
+
         try {
-            // Simple update - just add equipment to user document
+            // Create update map
             Map<String, Object> updates = new HashMap<>();
             updates.put("coins", userCoins - equipment.getPrice());
 
-            // Simple equipment addition - just add the name
+            // Handle equipment addition safely
             userRef.document(currentUserId).get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    // Check if fragment is still valid in callback
+                    // Check fragment state again
                     if (getContext() == null || !isAdded()) {
                         return;
                     }
 
                     try {
-                        List<String> equipmentList = new ArrayList<>();
-
-                        // Get existing equipment safely
-                        if (documentSnapshot.exists()) {
-                            Object equipmentField = documentSnapshot.get("equipment");
-                            if (equipmentField instanceof List) {
-                                for (Object item : (List<?>) equipmentField) {
-                                    if (item instanceof String) {
-                                        equipmentList.add((String) item);
-                                    }
-                                }
-                            }
-                        }
-
-                        // Handle equipment with quantities
-                        String equipmentName = equipment.getName();
-                        boolean found = false;
-
-                        android.util.Log.d("EquipmentFragment", "Looking for equipment: " + equipmentName);
-                        android.util.Log.d("EquipmentFragment", "Current equipment list: " + equipmentList.toString());
-
-                        // Check if equipment already exists and update quantity
-                        for (int i = 0; i < equipmentList.size(); i++) {
-                            String item = equipmentList.get(i);
-                            android.util.Log.d("EquipmentFragment", "Checking item: " + item);
-
-                            // Check if this item matches our equipment (with or without quantity)
-                            String itemBaseName = extractBaseNameFromEquipmentString(item);
-                            android.util.Log.d("EquipmentFragment", "Item base name: " + itemBaseName);
-
-                            if (itemBaseName.equals(equipmentName)) {
-                                // Extract current quantity and increment
-                                int currentQuantity = extractQuantityFromEquipmentString(item);
-                                android.util.Log.d("EquipmentFragment", "Found match! Current quantity: " + currentQuantity);
-                                equipmentList.set(i, equipmentName + " (" + (currentQuantity + 1) + ")");
-                                android.util.Log.d("EquipmentFragment", "Updated to: " + equipmentName + " (" + (currentQuantity + 1) + ")");
-                                found = true;
-                                break;
-                            }
-                        }
-
-                        // If not found, add with quantity 1
-                        if (!found) {
-                            android.util.Log.d("EquipmentFragment", "Equipment not found, adding new: " + equipmentName + " (1)");
-                            equipmentList.add(equipmentName + " (1)");
-                        }
-
-                        android.util.Log.d("EquipmentFragment", "Final equipment list: " + equipmentList.toString());
-
-                        updates.put("equipment", equipmentList);
-
-                        // Update user document
-                        userRef.document(currentUserId).update(updates)
-                            .addOnSuccessListener(aVoid -> {
-                                if (getContext() != null && isAdded()) {
-                                    Toast.makeText(getContext(), "Kupljeno: " + equipment.getName(), Toast.LENGTH_SHORT).show();
-                                    // Update local coins immediately to prevent inconsistent state
-                                    userCoins = userCoins - equipment.getPrice();
-                                    // Equipment list will be updated automatically via real-time listener
-                                }
-                            })
-                            .addOnFailureListener(e -> {
-                                android.util.Log.e("EquipmentFragment", "Failed to update user document", e);
-                                if (getContext() != null && isAdded()) {
-                                    Toast.makeText(getContext(), "Greška pri kupovini", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
+                        addEquipmentToUser(documentSnapshot, equipment, updates);
                     } catch (Exception e) {
-                        android.util.Log.e("EquipmentFragment", "Error processing purchase", e);
-                        if (getContext() != null && isAdded()) {
-                            Toast.makeText(getContext(), "Greška pri obradi kupovine", Toast.LENGTH_SHORT).show();
-                        }
+                        android.util.Log.e("EquipmentFragment", "Error adding equipment to user", e);
+                        showSafeToast("Greška pri dodavanju opreme!");
                     }
                 })
                 .addOnFailureListener(e -> {
                     android.util.Log.e("EquipmentFragment", "Failed to get user document", e);
-                    if (getContext() != null && isAdded()) {
-                        Toast.makeText(getContext(), "Greška pri dobijanju korisničkih podataka", Toast.LENGTH_SHORT).show();
-                    }
+                    showSafeToast("Greška pri pristupu podacima!");
                 });
 
         } catch (Exception e) {
-            android.util.Log.e("EquipmentFragment", "Critical error in buy", e);
-            if (getContext() != null && isAdded()) {
-                Toast.makeText(getContext(), "Kritična greška", Toast.LENGTH_SHORT).show();
-            }
+            android.util.Log.e("EquipmentFragment", "Error in performPurchase", e);
+            showSafeToast("Greška pri kupovini!");
         }
     }
 
-    private void updateUserAfterPurchase(Equipment equipment) {
+    private void addEquipmentToUser(DocumentSnapshot documentSnapshot, Equipment equipment, Map<String, Object> updates) {
+        if (documentSnapshot == null || !documentSnapshot.exists()) {
+            return;
+        }
+
         try {
-            userRef.document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
-                try {
-                    // Deduct coins
-                    Map<String, Object> userUpdate = new HashMap<>();
-                    userUpdate.put("coins", userCoins - equipment.getPrice());
+            // Handle equipment list for Boss fragment
+            String field = getEquipmentFieldName(equipment.getType());
+            if (!field.isEmpty()) {
+                List<Map<String, Object>> equipmentList = getOrCreateEquipmentList(documentSnapshot, field);
+                addOrUpdateEquipmentInList(equipmentList, equipment);
+                updates.put(field, equipmentList);
+            }
 
-                    // Handle equipment list
-                    List<String> userEquipment = new ArrayList<>();
-                    if (documentSnapshot.exists()) {
-                        Object equipmentObj = documentSnapshot.get("equipment");
-                        if (equipmentObj instanceof List) {
-                            List<?> existingEquipment = (List<?>) equipmentObj;
-                            for (Object item : existingEquipment) {
-                                if (item instanceof String) {
-                                    userEquipment.add((String) item);
-                                }
-                            }
-                        }
-                    }
+            // Handle equipment list for Profile fragment
+            List<String> profileEquipmentList = getOrCreateProfileEquipmentList(documentSnapshot);
+            addOrUpdateProfileEquipment(profileEquipmentList, equipment);
+            updates.put("equipment", profileEquipmentList);
 
-                    // Add new equipment
-                    String equipmentName = equipment.getName();
-                    if (equipment.getType().equals("napici")) {
-                        // For potions, handle quantity carefully
-                        boolean found = false;
-                        for (int i = 0; i < userEquipment.size(); i++) {
-                            String currentItem = userEquipment.get(i);
-                            if (currentItem != null && currentItem.startsWith(equipmentName)) {
-                                // Extract and increment quantity safely
-                                int quantity = extractQuantityFromString(currentItem) + 1;
-                                userEquipment.set(i, equipmentName + " (" + quantity + ")");
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            userEquipment.add(equipmentName + " (1)");
-                        }
-                    } else {
-                        // For non-potions, just add if not present
-                        if (!userEquipment.contains(equipmentName)) {
-                            userEquipment.add(equipmentName);
-                        }
-                    }
-
-                    userUpdate.put("equipment", userEquipment);
-                    userRef.document(currentUserId).update(userUpdate)
-                        .addOnSuccessListener(aVoid -> {
-                            android.util.Log.d("EquipmentFragment", "User updated successfully");
-                            Toast.makeText(getContext(), "Kupljena oprema: " + equipment.getName(), Toast.LENGTH_SHORT).show();
-                        })
-                        .addOnFailureListener(e -> {
-                            android.util.Log.e("EquipmentFragment", "Failed to update user", e);
-                            Toast.makeText(getContext(), "Greška pri ažuriranju korisnika", Toast.LENGTH_SHORT).show();
-                        });
-
-                } catch (Exception e) {
-                    android.util.Log.e("EquipmentFragment", "Error processing user document", e);
-                    Toast.makeText(getContext(), "Greška pri obradi korisničkih podataka", Toast.LENGTH_SHORT).show();
-                }
-            })
-            .addOnFailureListener(e -> {
-                android.util.Log.e("EquipmentFragment", "Failed to get user document", e);
-                Toast.makeText(getContext(), "Greška pri dohvatanju korisničkih podataka", Toast.LENGTH_SHORT).show();
-            });
+            // Execute the update
+            executeUpdate(equipment, updates);
 
         } catch (Exception e) {
-            android.util.Log.e("EquipmentFragment", "Error in updateUserAfterPurchase", e);
-            Toast.makeText(getContext(), "Greška pri ažuriranju korisnika", Toast.LENGTH_SHORT).show();
+            android.util.Log.e("EquipmentFragment", "Error in addEquipmentToUser", e);
+            showSafeToast("Greška pri obradi kupovine!");
+        }
+    }
+
+    private String getEquipmentFieldName(String type) {
+        if (type == null) return "";
+        switch (type.toLowerCase()) {
+            case "napici": return "potions";
+            case "odeca": return "clothes";
+            case "oruzje": return "weapons";
+            default: return "";
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Map<String, Object>> getOrCreateEquipmentList(DocumentSnapshot snapshot, String field) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        if (snapshot.contains(field)) {
+            Object obj = snapshot.get(field);
+            if (obj instanceof List) {
+                try {
+                    list = new ArrayList<>((List<Map<String, Object>>) obj);
+                } catch (ClassCastException e) {
+                    android.util.Log.w("EquipmentFragment", "Invalid equipment list format for " + field);
+                }
+            }
+        }
+        return list;
+    }
+
+    private void addOrUpdateEquipmentInList(List<Map<String, Object>> list, Equipment equipment) {
+        boolean found = false;
+        String equipmentName = equipment.getName();
+
+        for (Map<String, Object> item : list) {
+            if (equipmentName.equals(item.get("name"))) {
+                // Update existing item
+                Object quantityObj = item.get("quantity");
+                int currentQuantity = 1;
+                if (quantityObj instanceof Long) {
+                    currentQuantity = ((Long) quantityObj).intValue();
+                } else if (quantityObj instanceof Integer) {
+                    currentQuantity = (Integer) quantityObj;
+                }
+                item.put("quantity", currentQuantity + 1);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            // Add new item
+            Map<String, Object> newItem = new HashMap<>();
+            newItem.put("name", equipmentName);
+            newItem.put("quantity", 1);
+            newItem.put("active", false);
+
+            // Add specific properties based on type
+            if ("napici".equalsIgnoreCase(equipment.getType())) {
+                newItem.put("singleUse", !equipment.isPermanent());
+            } else if ("odeca".equalsIgnoreCase(equipment.getType())) {
+                newItem.put("remainingBattles", 0);
+            }
+
+            list.add(newItem);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> getOrCreateProfileEquipmentList(DocumentSnapshot snapshot) {
+        List<String> list = new ArrayList<>();
+        if (snapshot.contains("equipment")) {
+            Object obj = snapshot.get("equipment");
+            if (obj instanceof List) {
+                try {
+                    List<?> rawList = (List<?>) obj;
+                    for (Object item : rawList) {
+                        if (item instanceof String) {
+                            list.add((String) item);
+                        }
+                    }
+                } catch (Exception e) {
+                    android.util.Log.w("EquipmentFragment", "Error processing profile equipment list");
+                }
+            }
+        }
+        return list;
+    }
+
+    private void addOrUpdateProfileEquipment(List<String> list, Equipment equipment) {
+        String equipmentName = equipment.getName();
+        boolean found = false;
+
+        for (int i = 0; i < list.size(); i++) {
+            String item = list.get(i);
+            if (item != null && item.startsWith(equipmentName)) {
+                // Extract current quantity
+                int quantity = extractQuantityFromString(item);
+                list.set(i, equipmentName + " (" + (quantity + 1) + ")");
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            list.add(equipmentName + " (1)");
+        }
+    }
+
+    private void executeUpdate(Equipment equipment, Map<String, Object> updates) {
+        if (userRef == null || currentUserId == null) {
+            return;
+        }
+
+        userRef.document(currentUserId).update(updates)
+            .addOnSuccessListener(aVoid -> {
+                showSafeToast("Uspešno kupljeno: " + equipment.getName());
+                android.util.Log.d("EquipmentFragment", "Purchase successful for: " + equipment.getName());
+            })
+            .addOnFailureListener(e -> {
+                android.util.Log.e("EquipmentFragment", "Failed to update user after purchase", e);
+                showSafeToast("Greška pri kupovini!");
+            });
+    }
+
+    private void showSafeToast(String message) {
+        try {
+            if (getContext() != null && isAdded() && !isDetached()) {
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            android.util.Log.e("EquipmentFragment", "Error showing toast: " + message, e);
         }
     }
 
@@ -529,7 +557,6 @@ public class EquipmentFragment extends Fragment implements EquipmentAdapter.OnEq
                 int endIndex = equipmentString.indexOf(")");
                 if (startIndex < endIndex) {
                     String quantityStr = equipmentString.substring(startIndex, endIndex);
-                    // Remove any non-numeric characters except digits
                     quantityStr = quantityStr.replaceAll("[^0-9]", "");
                     if (!quantityStr.isEmpty()) {
                         return Integer.parseInt(quantityStr);
@@ -539,7 +566,7 @@ public class EquipmentFragment extends Fragment implements EquipmentAdapter.OnEq
         } catch (Exception e) {
             android.util.Log.e("EquipmentFragment", "Error extracting quantity from: " + equipmentString, e);
         }
-        return 1; // Default quantity
+        return 1;
     }
 
     private int extractQuantityFromEquipmentString(String equipmentString) {
@@ -549,7 +576,6 @@ public class EquipmentFragment extends Fragment implements EquipmentAdapter.OnEq
                 int endIndex = equipmentString.indexOf(")");
                 if (startIndex < endIndex) {
                     String quantityStr = equipmentString.substring(startIndex, endIndex);
-                    // Remove any non-numeric characters except digits
                     quantityStr = quantityStr.replaceAll("[^0-9]", "");
                     if (!quantityStr.isEmpty()) {
                         return Integer.parseInt(quantityStr);
@@ -559,22 +585,7 @@ public class EquipmentFragment extends Fragment implements EquipmentAdapter.OnEq
         } catch (Exception e) {
             android.util.Log.e("EquipmentFragment", "Error extracting quantity from equipment string: " + equipmentString, e);
         }
-        return 1; // Default quantity if not found or error
-    }
-
-    private String extractBaseNameFromEquipmentString(String equipmentString) {
-        try {
-            if (equipmentString.contains("(")) {
-                // Return everything before the first opening parenthesis, trimmed
-                return equipmentString.substring(0, equipmentString.indexOf("(")).trim();
-            } else {
-                // No parenthesis, return the whole string trimmed
-                return equipmentString.trim();
-            }
-        } catch (Exception e) {
-            android.util.Log.e("EquipmentFragment", "Error extracting base name from: " + equipmentString, e);
-            return equipmentString; // Return original string if error
-        }
+        return 1;
     }
 
     @Override
@@ -586,7 +597,7 @@ public class EquipmentFragment extends Fragment implements EquipmentAdapter.OnEq
         }
 
         try {
-            // Update user's equipment list to decrease quantity
+            // Update user's equipment list to decrease quantity (za prikaz na profilu)
             userRef.document(currentUserId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (getContext() == null || !isAdded()) {
@@ -595,8 +606,6 @@ public class EquipmentFragment extends Fragment implements EquipmentAdapter.OnEq
 
                     try {
                         List<String> equipmentList = new ArrayList<>();
-
-                        // Get existing equipment safely
                         if (documentSnapshot.exists()) {
                             Object equipmentField = documentSnapshot.get("equipment");
                             if (equipmentField instanceof List) {
@@ -607,32 +616,25 @@ public class EquipmentFragment extends Fragment implements EquipmentAdapter.OnEq
                                 }
                             }
                         }
-
                         // Find and decrease quantity of the equipment
                         String equipmentName = equipment.getName();
                         boolean found = false;
-
                         for (int i = 0; i < equipmentList.size(); i++) {
                             String item = equipmentList.get(i);
                             if (item.startsWith(equipmentName)) {
                                 int currentQuantity = extractQuantityFromEquipmentString(item);
-
                                 if (currentQuantity > 1) {
-                                    // Decrease quantity
                                     equipmentList.set(i, equipmentName + " (" + (currentQuantity - 1) + ")");
                                 } else {
-                                    // Remove item if quantity becomes 0
                                     equipmentList.remove(i);
                                 }
                                 found = true;
                                 break;
                             }
                         }
-
                         if (found) {
                             Map<String, Object> updates = new HashMap<>();
                             updates.put("equipment", equipmentList);
-
                             userRef.document(currentUserId).update(updates)
                                 .addOnSuccessListener(aVoid -> {
                                     if (getContext() != null && isAdded()) {
@@ -648,9 +650,42 @@ public class EquipmentFragment extends Fragment implements EquipmentAdapter.OnEq
                         } else {
                             if (getContext() != null && isAdded()) {
                                 Toast.makeText(getContext(), "Oprema nije pronađena", Toast.LENGTH_SHORT).show();
-                            }
                         }
-
+                        }
+                        // --- NOVO: Aktivacija napitka u kolekciji 'potions' ---
+                        userRef.document(currentUserId).get().addOnSuccessListener(snapshot -> {
+                            if (snapshot.exists() && snapshot.contains("potions")) {
+                                List<Map<String, Object>> potions = (List<Map<String, Object>>) snapshot.get("potions");
+                                boolean potionFound = false;
+                                for (Map<String, Object> potion : potions) {
+                                    if (equipmentName.equals(potion.get("name")) && !Boolean.TRUE.equals(potion.get("active"))) {
+                                        int q = potion.containsKey("quantity") ? ((Long)potion.get("quantity")).intValue() : 1;
+                                        if (q > 1) {
+                                            potion.put("quantity", q - 1);
+                                        } else {
+                                            potion.put("quantity", 0);
+                                        }
+                                        // Dodaj novi aktivirani napitak
+                                        Map<String, Object> activePotion = new HashMap<>(potion);
+                                        activePotion.put("active", true);
+                                        potions.add(activePotion);
+                                        potionFound = true;
+                                        break;
+                                    }
+                                }
+                                if (potionFound) {
+                                    userRef.document(currentUserId).update("potions", potions)
+                                        .addOnSuccessListener(aVoid -> {
+                                            if (getContext() != null && isAdded()) {
+                                                Toast.makeText(getContext(), "Napitak aktiviran!", Toast.LENGTH_SHORT).show();
+                                                // Osvježi prikaz
+                                                if (getActivity() != null) getActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+                                            }
+                                        });
+                                }
+                            }
+                        });
+                        // --- KRAJ NOVOG DELA ---
                     } catch (Exception e) {
                         android.util.Log.e("EquipmentFragment", "Error processing equipment activation", e);
                         if (getContext() != null && isAdded()) {
@@ -664,13 +699,57 @@ public class EquipmentFragment extends Fragment implements EquipmentAdapter.OnEq
                         Toast.makeText(getContext(), "Greška pri dobijanju korisničkih podataka", Toast.LENGTH_SHORT).show();
                     }
                 });
-
         } catch (Exception e) {
             android.util.Log.e("EquipmentFragment", "Critical error in activate", e);
             if (getContext() != null && isAdded()) {
                 Toast.makeText(getContext(), "Kritična greška pri aktivaciji", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void activatePotionInCollection(String equipmentName) {
+        userRef.document(currentUserId).get().addOnSuccessListener(snapshot -> {
+            if (snapshot.exists() && snapshot.contains("potions")) {
+                List<Map<String, Object>> potions = (List<Map<String, Object>>) snapshot.get("potions");
+                if (potions != null) {
+                    boolean potionFound = false;
+                    for (Map<String, Object> potion : potions) {
+                        if (equipmentName.equals(potion.get("name")) && !Boolean.TRUE.equals(potion.get("active"))) {
+                            Object quantityObj = potion.get("quantity");
+                            int q = 1;
+                            if (quantityObj instanceof Long) {
+                                q = ((Long) quantityObj).intValue();
+                            }
+
+                            if (q > 1) {
+                                potion.put("quantity", q - 1);
+                            } else {
+                                potion.put("quantity", 0);
+                            }
+
+                            Map<String, Object> activePotion = new HashMap<>(potion);
+                            activePotion.put("active", true);
+                            potions.add(activePotion);
+                            potionFound = true;
+                            break;
+                        }
+                    }
+
+                    if (potionFound) {
+                        userRef.document(currentUserId).update("potions", potions)
+                            .addOnSuccessListener(aVoid -> {
+                                if (getContext() != null && isAdded()) {
+                                    Toast.makeText(getContext(), "Napitak aktiviran!", Toast.LENGTH_SHORT).show();
+                                    if (getActivity() != null) {
+                                        getActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+                                    }
+                                }
+                            });
+                    }
+                }
+            }
+        });
     }
 
     @Override
